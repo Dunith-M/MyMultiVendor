@@ -1,36 +1,28 @@
-// src/utils/auth.js
+// client/src/utils/auth.js
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-// Register user
-export async function register(form) {
-  const res = await fetch('http://localhost:5000/api/auth/register', {
+export async function apiRegister(form) {
+  const res = await fetch(`${API}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(form),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Register failed');
+  if (!res.ok) throw new Error(data.message || (data.errors && data.errors[0]?.msg) || 'Register failed');
   return data;
 }
 
-// Login user & save token
-export async function login(email, password) {
-  const res = await fetch('http://localhost:5000/api/auth/login', {
+export async function apiLogin(email, password) {
+  const res = await fetch(`${API}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Login failed');
-
-  // store token locally
-  localStorage.setItem('token', data.token);
-  const payload = parseJwt(data.token);
-  localStorage.setItem('role', payload.role);
-
+  if (!res.ok) throw new Error(data.message || (data.errors && data.errors[0]?.msg) || 'Login failed');
   return data;
 }
 
-// Decode JWT (not secure, just for quick role checks client-side)
 export function parseJwt(token) {
   try {
     const base64 = token.split('.')[1];
@@ -40,7 +32,14 @@ export function parseJwt(token) {
   }
 }
 
-// Helper: get token
+export function setToken(token) {
+  localStorage.setItem('token', token);
+}
+
 export function getToken() {
   return localStorage.getItem('token');
+}
+
+export function removeToken() {
+  localStorage.removeItem('token');
 }

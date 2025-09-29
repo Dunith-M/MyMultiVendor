@@ -1,15 +1,19 @@
-// src/components/ProtectedRoute.jsx
+// client/src/components/ProtectedRoute.jsx
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { getToken, parseJwt } from '../utils/auth';
+import { useAuth } from '../context/useAuth';
 
 export default function ProtectedRoute({ children, role }) {
-  const token = getToken();
-  if (!token) return <Navigate to="/login" />;
+  const { user, loading } = useAuth();
 
-  const payload = parseJwt(token);
-  if (!payload) return <Navigate to="/login" />;
+  if (loading) return <div className="p-4">Loading...</div>;
 
-  if (role && payload.role !== role) return <Navigate to="/login" />;
+  if (!user) return <Navigate to="/login" replace />;
+
+  if (role && user.role !== role) {
+    // optional: show unauthorized page or redirect to login
+    return <Navigate to="/login" replace />;
+  }
 
   return children;
 }
