@@ -1,9 +1,7 @@
-// server/index.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const dotenv = require('dotenv');
 
 const app = express();
 
@@ -11,9 +9,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// routes
+const authRouter = require('./routes/authRoutes');
+app.use('/api/auth', authRouter);
+
+// Example protected routes
+const authMiddleware = require('./middleware/authMiddleware');
+const roleMiddleware = require('./middleware/roleMiddleware');
+
 // test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'API working' });
+});
+
+// protected route (any logged-in user)
+app.get('/api/protected', authMiddleware, (req, res) => {
+  res.json({ message: 'Authenticated route', user: req.user });
+});
+
+// protected admin-only route
+app.get('/api/admin/test', authMiddleware, roleMiddleware('admin'), (req, res) => {
+  res.json({ message: 'Hello admin — access granted', user: req.user });
 });
 
 // DB connect
