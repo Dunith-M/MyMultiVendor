@@ -43,3 +43,21 @@ export function getToken() {
 export function removeToken() {
   localStorage.removeItem('token');
 }
+
+
+/**
+ * helper to call APIs with auth header and auto-throw on 401
+ */
+export async function apiFetch(path, opts = {}) {
+  const token = getToken();
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const res = await fetch(`${API}${path}`, { ...opts, headers });
+  if (res.status === 401) {
+    // token invalid/expired — let UI handle by logging out or redirecting
+    throw new Error('Unauthorized');
+  }
+  const data = await res.json().catch(()=> ({}));
+  if (!res.ok) throw new Error(data.message || 'API error');
+  return data;
+}
