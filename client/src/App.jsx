@@ -1,34 +1,30 @@
-// client/src/App.jsx
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-  const [msg, setMsg] = useState('')
-
-  async function testApi() {
-    try {
-      // Using full URL so no proxy needed; server must be running on port 5000
-      const res = await fetch('http://localhost:5000/api/test')
-      const data = await res.json()
-      setMsg(data.message)
-    } catch (err) {
-      setMsg('Error: ' + err.message)
-    }
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="p-8 bg-white rounded shadow">
-        <h1 className="text-xl mb-4">Hi Dunith 👋</h1>
-        <button
-          onClick={testApi}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Submit
-        </button>
-        <p className="mt-4">{msg}</p>
-      </div>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/admin/dashboard"
+          element={<ProtectedRoute role="admin"><h1>Admin Dashboard</h1></ProtectedRoute>}
+        />
+        <Route
+          path="/seller/dashboard"
+          element={<ProtectedRoute role="seller"><h1>Seller Dashboard</h1></ProtectedRoute>}
+        />
+        <Route
+          path="/customer/dashboard"
+          element={<ProtectedRoute role="customer"><h1>Customer Dashboard</h1></ProtectedRoute>}
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
