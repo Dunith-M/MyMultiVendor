@@ -13,6 +13,9 @@ app.use(express.json());
 const authRouter = require('./routes/authRoutes');
 app.use('/api/auth', authRouter);
 
+const sellerRoutes = require('./routes/sellerRoutes');
+app.use('/api/sellers', sellerRoutes);
+
 // Example protected routes
 const authMiddleware = require('./middleware/authMiddleware');
 const roleMiddleware = require('./middleware/roleMiddleware');
