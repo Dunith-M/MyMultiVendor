@@ -13,7 +13,7 @@ exports.applySeller = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // Prevent admins or existing sellers from applying
+    // Prevent admins or existing sellers from applying 
     if (user.role === 'admin') {
       return res.status(403).json({ message: 'Admin cannot apply as seller' });
     }
