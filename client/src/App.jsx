@@ -7,6 +7,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import SellerDashboard from './pages/SellerDashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import ApplySeller from './pages/ApplySeller';
 
 export default function App() {
   return (
@@ -25,6 +26,8 @@ export default function App() {
       <Route path="/customer/dashboard" element={
         <ProtectedRoute role="customer"><CustomerDashboard/></ProtectedRoute>
       } />
+
+      <Route path="/apply-seller" element={<ProtectedRoute><ApplySeller /></ProtectedRoute>} />
 
       <Route path="*" element={<Login />} />
     </Routes>
