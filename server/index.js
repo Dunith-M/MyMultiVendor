@@ -16,6 +16,10 @@ app.use('/api/auth', authRouter);
 const sellerRoutes = require('./routes/sellerRoutes');
 app.use('/api/sellers', sellerRoutes);
 
+const adminSellerRoutes = require('./routes/adminSellersRoutes');
+app.use('/api/admin/sellers', adminSellerRoutes);
+
+
 // Example protected routes
 const authMiddleware = require('./middleware/authMiddleware');
 const roleMiddleware = require('./middleware/roleMiddleware');
